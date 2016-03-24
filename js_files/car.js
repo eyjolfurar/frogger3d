@@ -28,11 +28,11 @@ function updateCarLocation (row, speed) {
   for(var i = 0 ; i <= 2 ; i++) {
     cars[row][i] += speed;
     //Collission
-    
+
     //
     if(cars[row][i] > 130+20) cars[row][i] = 0-20;
     else if(cars[row][i] < 0-20) cars[row][i] = 130+20;
-    Grid.update( cars[row][i] , row)
+    Grid.update( cars[row][i] , row, "CAR");
   }
 }
 

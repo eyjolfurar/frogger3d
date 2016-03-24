@@ -11,7 +11,7 @@ var proj;
 var vPosition;
 
 // rows
-var roadSpeeds = [0.3, -0.2, 0.4, -0.3, 0.1];
+var roadSpeeds = [null, -0.2, 0.4, -0.3, 0.1, -0.9];
 
 // the 36 vertices of the cube
 var cubeBuffer;
@@ -41,8 +41,8 @@ var cubeVertices = [
 var roadBuffer;
 var numRoadVertices = 6;
 var roadVertices = [
-  vec3(0*10,5*10,0), vec3(0*10,1*10,0), vec3(12*10,1*10,0),
-  vec3(12*10,1*10,0), vec3(12*10,5*10,0), vec3(0*10,5*10,0)
+  vec3(0*10,6*10,0), vec3(0*10,1*10,0), vec3(12*10,1*10,0),
+  vec3(12*10,1*10,0), vec3(12*10,6*10,0), vec3(0*10,6*10,0)
 ];
 // // vertices for roof
 // var rVertices = [
@@ -211,7 +211,11 @@ function drawRoadRow(mv, row) {
     //
 }
 
-
+function checkCollision(){
+  // Collission detection
+  var testx = Math.floor((Frog.xPos)/gridCellWidth);
+  if(Grid[testx][Frog.row] === true) console.log("BOOM");
+}
 
 function render()
 {
@@ -236,6 +240,7 @@ function render()
 
     Frog.draw(mv);
 
+    checkCollision();
 
     requestAnimFrame( render );
 }

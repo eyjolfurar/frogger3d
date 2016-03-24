@@ -24,8 +24,6 @@ Frog.draw = function(mv) {
 Frog.move = function() {
   console.log("move it");
 
-  // Collission detection
-  var testx = Math.floor((this.xPos)/gridCellWidth);
-  if(Grid[testx][this.row] === true) console.log("BOOM");
+
 
 }
