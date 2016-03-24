@@ -1,0 +1,52 @@
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html" charset="UTF-8"><script id="vertex-shader" type="x-shader/x-vertex">
+
+attribute  vec4 vPosition;
+
+uniform mat4 projection;
+uniform mat4 modelview;
+
+void main()
+{
+    gl_Position = projection * modelview * vPosition;
+}
+</script>
+
+<script id="fragment-shader" type="x-shader/x-fragment">
+
+precision mediump float;
+
+uniform vec4 fColor;
+
+void
+main()
+{
+    gl_FragColor = fColor;
+}
+</script>
+
+<script type="text/javascript" src="./js_files/webgl-utils.js"></script>
+<script type="text/javascript" src="./js_files/initShaders.js"></script>
+<script type="text/javascript" src="./js_files/MV.js"></script>
+<script type="text/javascript" src="./js_files/globals.js"></script>
+<script type="text/javascript" src="./js_files/frog.js"></script>
+<script type="text/javascript" src="./js_files/car.js"></script>
+<script type="text/javascript" src="./js_files/log.js"></script>
+<script type="text/javascript" src="./js_files/grid.js"></script>
+<script type="text/javascript" src="./js_files/game.js"></script>
+
+</head><body>
+<h4>texti</h4>
+<h4>texti</h4>
+<canvas id="gl-canvas" width="700" height="700">
+Oops ... your browser doesn't support the HTML5 canvas element
+</canvas>
+<div id="Viewpoint">1: Fjarlægt sjónarhorn</div>
+<div id="Height">Viðbótarhæð: 0</div>
+<div id="xPos">X Position: 0</div>
+<div id="yPos">Y Position: 0</div>
+
+<br>
+
+
+
+</body></html>
