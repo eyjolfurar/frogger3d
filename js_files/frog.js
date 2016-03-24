@@ -9,7 +9,7 @@ Frog.row = 0;
 
 Frog.draw = function(mv) {
     // console.log(this.xpos);
-    gl.uniform4fv( colorLoc, YELLOW );
+    gl.uniform4fv( colorLoc, GREEN );
 
     gl.bindBuffer( gl.ARRAY_BUFFER, cubeBuffer );
     gl.vertexAttribPointer( vPosition, 3, gl.FLOAT, false, 0, 0 );

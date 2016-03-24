@@ -16,7 +16,7 @@ function initCar() {
   }
   //cars[row][number of cars] = x position
   for (var j = 1; j <= 5 ; j++) {
-    RANDOM = getRandom(0 , 50);
+    RANDOM = Math.floor(getRandom(0 , 50));
     cars[j][0]=100 + RANDOM;
     cars[j][1]=50 + RANDOM;
     cars[j][2]=10 + RANDOM;
@@ -44,8 +44,8 @@ function drawCar( mv, x, row) {
     mv = mult( mv, translate( x, row*gridCellWidth+gridCellWidth/2, 0.0 ) );
     mv = mult( mv, rotateZ( carDirection ) ) ;
 
-    // set color to blue
-    gl.uniform4fv( colorLoc, BLUE );
+    // set color
+    gl.uniform4fv( colorLoc, colors[row-1] );
 
     gl.bindBuffer( gl.ARRAY_BUFFER, cubeBuffer );
     gl.vertexAttribPointer( vPosition, 3, gl.FLOAT, false, 0, 0 );
