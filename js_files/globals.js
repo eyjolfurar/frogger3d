@@ -1,9 +1,11 @@
 var BLUE = vec4(0.0, 0.0, 1.0, 1.0);
+var GREEN = vec4(0.0, 1.0, 0.0, 1.0);
 var RED = vec4(1.0, 0.0, 0.0, 1.0);
 var GRAY = vec4(0.4, 0.4, 0.4, 1.0);
 var YELLOW = vec4(1.0, 1.0, 0.0, 1.0);
 var BROWN = vec4(1.0, 0.5, 0.0, 1.0);
 var RANDOM = 0.0;
+var colors = [BLUE, RED, YELLOW, BLUE, RED];
 
 var gridCellWidth = 10;
 
