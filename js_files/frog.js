@@ -10,14 +10,14 @@ Frog.draw = function(mv) {
     // console.log(this.xpos);
     gl.uniform4fv( colorLoc, GREEN );
 
-    gl.bindBuffer( gl.ARRAY_BUFFER, cubeBuffer );
+    gl.bindBuffer( gl.ARRAY_BUFFER, frogBuffer );
     gl.vertexAttribPointer( vPosition, 3, gl.FLOAT, false, 0, 0 );
 
     mv = mult( mv, translate( this.xPos, this.row*gridCellWidth+gridCellWidth/2, 1 ) );
     mv = mult( mv, scalem( Frog.width,Frog.width,2 ) );
 
     gl.uniformMatrix4fv(mvLoc, false, flatten(mv));
-    gl.drawArrays( gl.TRIANGLES, 0, numCubeVertices );
+    gl.drawArrays( gl.TRIANGLES, 0, frogVertices.length );
 }
 
 Frog.move = function() {

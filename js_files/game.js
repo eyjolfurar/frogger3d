@@ -37,6 +37,12 @@ var cubeVertices = [
     vec3( -0.5, -0.5,  0.5 ), vec3( -0.5,  0.5,  0.5 ), vec3( -0.5,  0.5, -0.5 )
 ];
 
+
+  var PR = PlyReader();
+  var plyData = PR.read("frog1.ply");
+
+  var frogVertices = plyData.points;
+
 //ROAD STUFF
 var roadBuffer;
 var numRoadVertices = 6;
@@ -102,7 +108,7 @@ window.onload = function init()
     // VBO for frogger
     frogBuffer = gl.createBuffer();
     gl.bindBuffer( gl.ARRAY_BUFFER, frogBuffer );
-    gl.bufferData( gl.ARRAY_BUFFER, flatten(cubeVertices), gl.STATIC_DRAW );
+    gl.bufferData( gl.ARRAY_BUFFER, flatten(frogVertices), gl.STATIC_DRAW );
 
     // VBO for the road
     roadBuffer = gl.createBuffer();
@@ -166,7 +172,7 @@ window.onload = function init()
                 //restart();
         }
         gl.bindBuffer( gl.ARRAY_BUFFER, frogBuffer);
-        gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(cubeVertices));
+        gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(frogVertices));
     });
 
     render();
