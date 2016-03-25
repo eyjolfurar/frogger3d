@@ -32,7 +32,7 @@ function updateCarLocation (row, speed) {
     //
     if(cars[row][i] > 130+20) cars[row][i] = 0-20;
     else if(cars[row][i] < 0-20) cars[row][i] = 130+20;
-    Grid.update( cars[row][i] , row, "CAR");
+    Grid.update( cars[row][i] , row);
   }
 }
 

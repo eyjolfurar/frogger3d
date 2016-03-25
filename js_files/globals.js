@@ -9,8 +9,8 @@ var colors = [BLUE, RED, YELLOW, BLUE, RED];
 
 var gridCellWidth = 10;
 
-var columns = 13;
-var rows = 13;
+var columns = 12;
+var rows = 12;
 
 var row0=0;
 var row1=1;
@@ -24,7 +24,6 @@ var row8=8;
 var row9=9;
 var row10=10;
 var row11=11;
-var row12=12;
 
 var col0=0;
 var col1=1;
@@ -38,4 +37,3 @@ var col8=8;
 var col9=9;
 var col10=10;
 var col11=11;
-var col12=12;
