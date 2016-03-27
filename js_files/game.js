@@ -12,6 +12,7 @@ var vPosition;
 
 // rows
 var roadSpeeds = [null, -0.2, 0.4, -0.3, 0.1, -0.9,-0.2, 0.4, -0.3, 0.1, -0.9,-0.2, 0.4, -0.3, 0.1, -0.9];
+// var roadSpeeds = [null, -0.2, 0.4, -0.3, 0.1, -0.9,-0.2, 0.1, -0.1, 0.1, -0.1,-0.1, 0.1, -0.1, 0.1, -0.9];
 
 // the 36 vertices of the cube
 var cubeBuffer;
@@ -38,10 +39,10 @@ var cubeVertices = [
 ];
 
 
-  var PR = PlyReader();
-  var plyData = PR.read("frog1.ply");
-
-  var frogVertices = plyData.points;
+  // var PR = PlyReader();
+  // var plyData = PR.read("frog1.ply");
+  //
+  // var frogVertices = plyData.points;
 
 //ROAD STUFF
 var roadBuffer;
@@ -107,8 +108,10 @@ window.onload = function init()
 
     // VBO for frogger
     frogBuffer = gl.createBuffer();
-    gl.bindBuffer( gl.ARRAY_BUFFER, frogBuffer );
-    gl.bufferData( gl.ARRAY_BUFFER, flatten(frogVertices), gl.STATIC_DRAW );
+    // gl.bindBuffer( gl.ARRAY_BUFFER, frogBuffer );
+    // gl.bufferData( gl.ARRAY_BUFFER, flatten(frogVertices), gl.STATIC_DRAW );
+    gl.bindBuffer( gl.ARRAY_BUFFER, cubeBuffer );
+    gl.bufferData( gl.ARRAY_BUFFER, flatten(cubeVertices), gl.STATIC_DRAW );
 
     // VBO for the road
     roadBuffer = gl.createBuffer();
@@ -145,34 +148,40 @@ window.onload = function init()
                 return;
               }
                 Frog.xPos -= Frog.speed;
-                Frog.move();
+                Frog.col--;
                 break;
             case 39:	// right arrow
               if((Frog.xPos+Frog.speed) > col11*gridCellWidth+gridCellWidth/2 ) {
                 return;
               }
                 Frog.xPos += Frog.speed;
-                Frog.move();
+                Frog.col++;
                 break;
             case 38: // up arrow
               if((Frog.row*gridCellWidth+Frog.speed) > col11*gridCellWidth+gridCellWidth/2 ) {
                 return;
               }
+              else if(Frog.onRiver) {
+                  Frog.fixXLoc();
+              }
                 Frog.row++;
-                Frog.move();
                 break;
             case 40: //down arrow
-              if((Frog.row*gridCellWidth-Frog.speed) < col0*gridCellWidth+gridCellWidth/2 ) {
+              if((Frog.row*gridCellWidth-Frog.speed) < col0*gridCellWidth ) {
                 return;
               }
+              else if(Frog.onRiver) {
+                  Frog.fixXLoc();
+              }
                 Frog.row--;
-                Frog.move();
                 break;
             case 82: //r key
                 //restart();
         }
-        gl.bindBuffer( gl.ARRAY_BUFFER, frogBuffer);
-        gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(frogVertices));
+        // gl.bindBuffer( gl.ARRAY_BUFFER, frogBuffer);
+        // gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(frogVertices));
+        gl.bindBuffer( gl.ARRAY_BUFFER, cubeBuffer);
+        gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(cubeVertices));
     });
 
     render();
@@ -187,13 +196,19 @@ function house( x, y, size, mv ) {
 
     var mvRoof = mv;
 
-    gl.uniform4fv( colorLoc, RED );
+    var coordX = Math.floor((x)/gridCellWidth);
+    var coordY = Math.floor((y)/gridCellWidth);
+    if(Grid[coordX][coordY] ) {
+      gl.uniform4fv( colorLoc, RED );
+    } else {
+      gl.uniform4fv( colorLoc, BROWN );
+    }
 
     gl.bindBuffer( gl.ARRAY_BUFFER, cubeBuffer );
     gl.vertexAttribPointer( vPosition, 3, gl.FLOAT, false, 0, 0 );
 
     mv = mult( mv, translate( x, y, size/2 ) );
-    mv = mult( mv, scalem( size, size, size ) );
+    mv = mult( mv, scalem( size, size, 10*size ) );
 
     gl.uniformMatrix4fv(mvLoc, false, flatten(mv));
     gl.drawArrays( gl.TRIANGLES, 0, numCubeVertices );
@@ -264,27 +279,22 @@ function render()
 
 
     var mv = mat4();
-    switch( view ) {
-        case 1:
-            // Distant and stationary viewpoint
-	    mv = lookAt( vec3(60.0, -100.0+Frog.row*gridCellWidth+gridCellWidth/2, 80.0), vec3(60.0, 150.0, 0.0), vec3(0.0, 0.0, 1.0) );
-	    drawScenery( mv );
-      drawRoad(mv);
-      drawRiver(mv);
+    mv = lookAt( vec3(60.0, -100.0+Frog.row*gridCellWidth+gridCellWidth/2, 140.0), vec3(60.0, 150.0, 0.0), vec3(0.0, 0.0, 1.0) );
+    drawScenery( mv );
+    drawRoad(mv);
+    drawRiver(mv);
 
-      for (var i = 1; i <= 5 ; i++) {
-        drawRoadRow(mv, i);
-      }
-      for (var j = 7; j <= 10 ; j++) {
-        drawLogRow(mv, j);
-      }
-
-      break;
+    for (var i = 1; i <= 5 ; i++) {
+      drawRoadRow(mv, i);
+    }
+    for (var j = 7; j <= 10 ; j++) {
+      drawLogRow(mv, j);
     }
 
+    Frog.update();
+    Frog.checkCollision();
     Frog.draw(mv);
 
-    Frog.checkCollision();
 
     requestAnimFrame( render );
 }

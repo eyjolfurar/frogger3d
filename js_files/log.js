@@ -27,9 +27,7 @@ function updateLogLocation (row, speed) {
 
   for(var i = 0 ; i <= 2 ; i++) {
     logs[row][i] += speed;
-    //Collission
 
-    //
     if(logs[row][i] > 130+20) logs[row][i] = 0-20;
     else if(logs[row][i] < 0-20) logs[row][i] = 130+20;
     Grid.update( logs[row][i] , row)

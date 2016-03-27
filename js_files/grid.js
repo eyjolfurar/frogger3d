@@ -55,12 +55,17 @@ Grid.update = function(x, currentRow) {
     // check if log touches left cell
     if (x-logLength/2 < xRoundDown+gridCellWidth/2+Frog.width/2) {
       if(coordX && coordX<Grid.length && coordX>=0) {
+
         Grid[coordX][currentRow] = false;
+        // make game easier...
+        Grid[coordX-1][currentRow] = false;
       }
     }
     // check if log touches right cell
     if(x+logLength/2 > xRoundUp+gridCellWidth/2-Frog.width/2) {
       if(coordX && coordX<Grid.length-1 && coordX>=0) {
+        Grid[coordX][currentRow] = false;
+        // make game easier...
         Grid[coordX+1][currentRow] = false;
       }
     }
