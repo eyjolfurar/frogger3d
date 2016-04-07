@@ -12,16 +12,18 @@ Frog.draw = function(mv) {
     // console.log(this.xpos);
     gl.uniform4fv( colorLoc, GREEN );
 
-    // gl.bindBuffer( gl.ARRAY_BUFFER, frogBuffer );
-    gl.bindBuffer( gl.ARRAY_BUFFER, cubeBuffer );
+    gl.bindBuffer( gl.ARRAY_BUFFER, frogBuffer );
+    // gl.bindBuffer( gl.ARRAY_BUFFER, cubeBuffer );
     gl.vertexAttribPointer( vPosition, 3, gl.FLOAT, false, 0, 0 );
 
     mv = mult( mv, translate( this.xPos, this.row*gridCellWidth+gridCellWidth/2, 1 ) );
-    mv = mult( mv, scalem( Frog.width,Frog.width,2 ) );
+    mv = mult( mv, scalem( 3,3,3 ) );
+    // rotate frog
+    mv = mult( mv, rotate( 90, [1,1,1]) );
 
     gl.uniformMatrix4fv(mvLoc, false, flatten(mv));
-    // gl.drawArrays( gl.TRIANGLES, 0, frogVertices.length );
-    gl.drawArrays( gl.TRIANGLES, 0, numCubeVertices );
+    gl.drawArrays( gl.TRIANGLES, 0, frogVertices.length );
+    // gl.drawArrays( gl.TRIANGLES, 0, numCubeVertices );
 }
 
 Frog.update = function() {
@@ -62,7 +64,7 @@ Frog.checkCollision = function() {
     var testx = Math.floor((Frog.xPos)/gridCellWidth);
     if(Grid[testx][Frog.row] === true) {
       console.log("BOOM");
-      
+
       Frog.xPos = gridCellWidth*col6+gridCellWidth/2;
       Frog.row = 0;
       Frog.col = 6;

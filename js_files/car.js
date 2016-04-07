@@ -26,7 +26,7 @@ function initCar() {
 function updateCarLocation (row, speed) {
 
   for(var i = 0 ; i <= 2 ; i++) {
-    cars[row][i] += speed;
+    cars[row][i] += speed*2;
     //Collission
 
     //
@@ -47,7 +47,7 @@ function drawCar( mv, x, row) {
     // set color
     gl.uniform4fv( colorLoc, colors[row-1] );
 
-    gl.bindBuffer( gl.ARRAY_BUFFER, cubeBuffer );
+    gl.bindBuffer( gl.ARRAY_BUFFER, frogBuffer );
     gl.vertexAttribPointer( vPosition, 3, gl.FLOAT, false, 0, 0 );
 
     var mv1 = mv;
@@ -56,12 +56,12 @@ function drawCar( mv, x, row) {
     mv = mult( mv, translate( 0.0, 0.0, 0.5 ) );
 
     gl.uniformMatrix4fv(mvLoc, false, flatten(mv));
-    gl.drawArrays( gl.TRIANGLES, 0, numCubeVertices );
+    gl.drawArrays( gl.TRIANGLES, 0, frogVertices.length );
 
     // upper part of the car
     mv1 = mult( mv1, scalem( 4.0, 3.0, 2.0 ) );
     mv1 = mult( mv1, translate( -0.2, 0.0, 1.5 ) );
 
     gl.uniformMatrix4fv(mvLoc, false, flatten(mv1));
-    gl.drawArrays( gl.TRIANGLES, 0, numCubeVertices );
+    gl.drawArrays( gl.TRIANGLES, 0, frogVertices.length );
 }
