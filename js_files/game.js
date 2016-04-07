@@ -10,6 +10,10 @@ var pLoc;
 var proj;
 var vPosition;
 
+
+
+
+
 // rows
 var roadSpeeds = [null, -0.2, 0.4, -0.3, 0.1, -0.9,-0.2, 0.4, -0.3, 0.1, -0.9,-0.2, 0.4, -0.3, 0.1, -0.9];
 // var roadSpeeds = [null, -0.2, 0.4, -0.3, 0.1, -0.9,-0.2, 0.1, -0.1, 0.1, -0.1,-0.1, 0.1, -0.1, 0.1, -0.9];
@@ -39,10 +43,10 @@ var cubeVertices = [
 ];
 
 
-  // var PR = PlyReader();
-  // var plyData = PR.read("frog1.ply");
-  //
-  // var frogVertices = plyData.points;
+var PR = PlyReader();
+var plyData = PR.read("frog1.ply");
+
+var frogVertices = plyData.points;
 
 //ROAD STUFF
 var roadBuffer;
@@ -108,10 +112,10 @@ window.onload = function init()
 
     // VBO for frogger
     frogBuffer = gl.createBuffer();
-    // gl.bindBuffer( gl.ARRAY_BUFFER, frogBuffer );
-    // gl.bufferData( gl.ARRAY_BUFFER, flatten(frogVertices), gl.STATIC_DRAW );
-    gl.bindBuffer( gl.ARRAY_BUFFER, cubeBuffer );
-    gl.bufferData( gl.ARRAY_BUFFER, flatten(cubeVertices), gl.STATIC_DRAW );
+    gl.bindBuffer( gl.ARRAY_BUFFER, frogBuffer );
+    gl.bufferData( gl.ARRAY_BUFFER, flatten(frogVertices), gl.STATIC_DRAW );
+    // gl.bindBuffer( gl.ARRAY_BUFFER, cubeBuffer );
+    // gl.bufferData( gl.ARRAY_BUFFER, flatten(cubeVertices), gl.STATIC_DRAW );
 
     // VBO for the road
     roadBuffer = gl.createBuffer();
