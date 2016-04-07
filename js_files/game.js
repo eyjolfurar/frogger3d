@@ -49,20 +49,20 @@ var plyData = PR.read("frog1.ply");
 var frogVertices = plyData.points;
 
 //ROAD STUFF
-var roadBuffer;
-var numRoadVertices = 6;
-var roadVertices = [
-  vec3(0*10,6*10,0), vec3(0*10,1*10,0), vec3(12*10,1*10,0),
-  vec3(12*10,1*10,0), vec3(12*10,6*10,0), vec3(0*10,6*10,0)
+var terrainBuffer;
+var numTerrainVertices = 6;
+var terrainVertices = [
+  vec3(-0.5,-0.5,0), vec3(-0.5,0.5,0), vec3(0.5,0.5,0),
+  vec3(0.5,0.5,0), vec3(0.5,-0.5,0), vec3(-0.5,-0.5,0)
 ];
 
 //RIVER STUFF
-var riverBuffer;
-var numRiverVertices = 6;
-var riverVertices = [
-  vec3(0*10,11*10,0), vec3(0*10,7*10,0), vec3(12*10,7*10,0),
-  vec3(12*10,7*10,0), vec3(12*10,11*10,0), vec3(0*10,11*10,0)
-];
+// var riverBuffer;
+// var numRiverVertices = 6;
+// var riverVertices = [
+//   vec3(0*10,11*10,0), vec3(0*10,7*10,0), vec3(12*10,7*10,0),
+//   vec3(12*10,7*10,0), vec3(12*10,11*10,0), vec3(0*10,11*10,0)
+// ];
 
 // // vertices for roof
 // var rVertices = [
@@ -80,8 +80,14 @@ var riverVertices = [
 //     vec3(  -0.5,  0.5, 0.5 ), vec3( 0.5,  0.5, 0.5 ), vec3( 0.0,  0.0,  1.0 )
 //
 // ];
-
+var yLookAt = -60.0+Frog.row*gridCellWidth+gridCellWidth/2;
+var zLookAt = 40;
 var frogBuffer;
+var victory = false;
+var isDead = false;
+var randomNumbers1 = [];
+var randomNumbers2 = [];
+
 
 window.onload = function init()
 {
@@ -104,6 +110,7 @@ window.onload = function init()
     Grid.init();
     initCar();
     initLog();
+    generateRandomNumbers();
 
     // VBO for the cube
     cubeBuffer = gl.createBuffer();
@@ -118,14 +125,14 @@ window.onload = function init()
     // gl.bufferData( gl.ARRAY_BUFFER, flatten(cubeVertices), gl.STATIC_DRAW );
 
     // VBO for the road
-    roadBuffer = gl.createBuffer();
-    gl.bindBuffer( gl.ARRAY_BUFFER, roadBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, flatten(roadVertices), gl.STATIC_DRAW);
+    terrainBuffer = gl.createBuffer();
+    gl.bindBuffer( gl.ARRAY_BUFFER, terrainBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, flatten(terrainVertices), gl.STATIC_DRAW);
 
-    // VBO for the river
-    riverBuffer = gl.createBuffer();
-    gl.bindBuffer( gl.ARRAY_BUFFER, riverBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, flatten(riverVertices), gl.STATIC_DRAW);
+    // // VBO for the river
+    // riverBuffer = gl.createBuffer();
+    // gl.bindBuffer( gl.ARRAY_BUFFER, riverBuffer);
+    // gl.bufferData(gl.ARRAY_BUFFER, flatten(riverVertices), gl.STATIC_DRAW);
 
     vPosition = gl.getAttribLocation( program, "vPosition" );
     gl.vertexAttribPointer( vPosition, 3, gl.FLOAT, false, 0, 0 );
@@ -140,9 +147,6 @@ window.onload = function init()
     proj = perspective( 50.0, 1.0, 1.0, 500.0 );
     gl.uniformMatrix4fv(pLoc, false, flatten(proj));
 
-    document.getElementById("Viewpoint").innerHTML = "1: Fjarlægt sjónarhorn";
-    document.getElementById("Height").innerHTML = "Viðbótarhæð: "+ height;
-
     // Event listener for keyboard
     window.addEventListener("keydown", function(e){
 
@@ -151,16 +155,20 @@ window.onload = function init()
               if((Frog.xPos-Frog.speed) < col0*gridCellWidth+gridCellWidth/2 ) {
                 return;
               }
+              if(!victory && !isDead) {
                 Frog.xPos -= Frog.speed;
                 Frog.col--;
+              }
                 break;
             case 39:	// right arrow
               if((Frog.xPos+Frog.speed) > col11*gridCellWidth+gridCellWidth/2 ) {
                 return;
               }
+              if(!victory && !isDead) {
                 Frog.xPos += Frog.speed;
                 Frog.col++;
-                break;
+              }
+              break;
             case 38: // up arrow
               if((Frog.row*gridCellWidth+Frog.speed) > col11*gridCellWidth+gridCellWidth/2 ) {
                 return;
@@ -168,8 +176,10 @@ window.onload = function init()
               else if(Frog.onRiver) {
                   Frog.fixXLoc();
               }
+              if(!victory && !isDead) {
                 Frog.row++;
-                break;
+              }
+              break;
             case 40: //down arrow
               if((Frog.row*gridCellWidth-Frog.speed) < col0*gridCellWidth ) {
                 return;
@@ -177,10 +187,12 @@ window.onload = function init()
               else if(Frog.onRiver) {
                   Frog.fixXLoc();
               }
+              if(!victory && !isDead) {
                 Frog.row--;
-                break;
+              }
+              break;
             case 82: //r key
-                //restart();
+                restart();
         }
         // gl.bindBuffer( gl.ARRAY_BUFFER, frogBuffer);
         // gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(frogVertices));
@@ -192,27 +204,33 @@ window.onload = function init()
 }
 
 
+function generateRandomNumbers() {
 
+  for (var i = 0; i < 14*14; i++) {
+      randomNumbers1[i] = getRandom(-30,170);
+      randomNumbers2[i] = getRandom(-30,170);
+  }
+}
 
 
 // draw a house in location (x, y) of size size
-function house( x, y, size, mv ) {
+function house( x, y, z, size, mv ) {
 
     var mvRoof = mv;
 
-    var coordX = Math.floor((x)/gridCellWidth);
-    var coordY = Math.floor((y)/gridCellWidth);
-    if(Grid[coordX][coordY] ) {
-      gl.uniform4fv( colorLoc, RED );
-    } else {
-      gl.uniform4fv( colorLoc, BROWN );
-    }
+    // var coordX = Math.floor((x)/gridCellWidth);
+    // var coordY = Math.floor((y)/gridCellWidth);
+    // if(Grid[coordX][coordY] ) {
+    //   gl.uniform4fv( colorLoc, RED );
+    // } else {
+      gl.uniform4fv( colorLoc, WHITE );
+    // }
 
     gl.bindBuffer( gl.ARRAY_BUFFER, cubeBuffer );
     gl.vertexAttribPointer( vPosition, 3, gl.FLOAT, false, 0, 0 );
 
-    mv = mult( mv, translate( x, y, size/2 ) );
-    mv = mult( mv, scalem( size, size, 10*size ) );
+    mv = mult( mv, translate( x, y, z ) );
+    mv = mult( mv, scalem( 1.5*size, size, size ) );
 
     gl.uniformMatrix4fv(mvLoc, false, flatten(mv));
     gl.drawArrays( gl.TRIANGLES, 0, numCubeVertices );
@@ -223,16 +241,16 @@ function drawScenery( mv ) {
 
 
     // draw houses
-    house(0.0, 0.0, 2.0, mv);
-
-    house(0.0, 0.0, 2.0, mv);
-    house(0.0, 0.0, 2.0, mv);
-
-    for (var i = 0; i < 12; i++) {
-      for (var j = 0; j < 12; j++) {
-        house(i*10+gridCellWidth/2,j*10+gridCellWidth/2,1,mv);
-      }
-    }
+    // house(0.0, 0.0, 2.0, mv);
+    //
+    // house(0.0, 0.0, 2.0, mv);
+    // house(0.0, 0.0, 2.0, mv);
+    //
+    // for (var i = 0; i < 12; i++) {
+    //   for (var j = 0; j < 12; j++) {
+    //     house(i*10+gridCellWidth/2,j*10+gridCellWidth/2,1,mv);
+    //   }
+    // }
 
 }
 
@@ -240,19 +258,59 @@ function drawRoad(mv) {
   // set color to blue
   gl.uniform4fv( colorLoc, GRAY );
 
-  gl.bindBuffer( gl.ARRAY_BUFFER, roadBuffer );
+  gl.bindBuffer( gl.ARRAY_BUFFER, terrainBuffer );
   gl.vertexAttribPointer( vPosition, 3, gl.FLOAT, false, 0, 0 );
+
+  mv = mult( mv, translate( 6*gridCellWidth, 4*gridCellWidth-gridCellWidth/2, 0.5 ) );
+  mv = mult( mv, scalem( 20*gridCellWidth, 50, 1.0 ) );
+
   gl.uniformMatrix4fv(mvLoc, false, flatten(mv));
-  gl.drawArrays( gl.TRIANGLES, 0, numRoadVertices );
+  gl.drawArrays( gl.TRIANGLES, 0, numTerrainVertices );
 }
+
 function drawRiver(mv) {
   // set color to blue
   gl.uniform4fv( colorLoc, BLUE );
 
-  gl.bindBuffer( gl.ARRAY_BUFFER, riverBuffer );
+  gl.bindBuffer( gl.ARRAY_BUFFER, terrainBuffer );
   gl.vertexAttribPointer( vPosition, 3, gl.FLOAT, false, 0, 0 );
+
+  mv = mult( mv, translate( 6*gridCellWidth, 9*gridCellWidth, 0.5 ) );
+  mv = mult( mv, scalem( 27*gridCellWidth, 40, 1.0 ) );
+
   gl.uniformMatrix4fv(mvLoc, false, flatten(mv));
-  gl.drawArrays( gl.TRIANGLES, 0, numRiverVertices );
+  gl.drawArrays( gl.TRIANGLES, 0, numTerrainVertices );
+}
+
+function drawFields(mv, x, y, z, scaleX, scaleY, scaleZ) {
+  gl.uniform4fv( colorLoc, GREENGROUND );
+
+  gl.bindBuffer( gl.ARRAY_BUFFER, terrainBuffer );
+  gl.vertexAttribPointer( vPosition, 3, gl.FLOAT, false, 0, 0 );
+
+  mv = mult( mv, translate( x, y , z ) );
+  mv = mult( mv, scalem( scaleX, scaleY, scaleZ ) );
+
+  gl.uniformMatrix4fv(mvLoc, false, flatten(mv));
+  gl.drawArrays( gl.TRIANGLES, 0, numTerrainVertices );
+}
+
+function drawSky(mv, x, y, z, scaleX, scaleY, scaleZ) {
+  var mvCloud = mv;
+  gl.uniform4fv( colorLoc, BLUELIGHT );
+
+  gl.bindBuffer( gl.ARRAY_BUFFER, cubeBuffer );
+  gl.vertexAttribPointer( vPosition, 3, gl.FLOAT, false, 0, 0 );
+
+  mv = mult( mv, translate( x, y , z ) );
+  mv = mult( mv, scalem( scaleX, scaleY, scaleZ ) );
+
+  gl.uniformMatrix4fv(mvLoc, false, flatten(mv));
+  gl.drawArrays( gl.TRIANGLES, 0, numCubeVertices );
+
+  for (var i = 0; i < 14*14; i++) {
+      house(randomNumbers1[i] , 120, randomNumbers2[i],4-Frog.row/14, mvCloud);
+    }
 }
 
 function drawRoadRow(mv, row) {
@@ -264,6 +322,7 @@ function drawRoadRow(mv, row) {
     drawCar( mv, cars[row][2], row );
 
 }
+
 function drawLogRow(mv, row) {
 
     Grid.reset(row);
@@ -271,7 +330,32 @@ function drawLogRow(mv, row) {
     drawLog( mv, logs[row][0], row );
     drawLog( mv, logs[row][1], row );
     drawLog( mv, logs[row][2], row );
+    drawLog( mv, logs[row][3], row );
+}
 
+function drawHouses(mv) {
+  // house(160, 150, 20, mv);
+  // house(-10, 170, 15, mv);
+  // house(70, 280, 15, mv);
+  // house(110, 200, 15, mv);
+  // house(130, 230, 15, mv);
+  // house(20, 260, 15, mv);
+  // house(-50, 230, 15, mv);
+  // house(90, 240, 15, mv);
+  // house(-10, 260, 15, mv);
+  // house(50, 220, 15, mv);
+  // house(70, 210, 15, mv);
+}
+
+function restart() {
+  Frog.xPos = gridCellWidth*col6+gridCellWidth/2;
+  Frog.row = 0;
+  Frog.col = 6;
+  Frog.onRiver = false;
+  victory = false;
+  isDead = false;
+  document.getElementById("victory-message").innerHTML = ""
+  document.getElementById("restart-message").innerHTML = ""
 }
 
 
@@ -283,10 +367,30 @@ function render()
 
 
     var mv = mat4();
-    mv = lookAt( vec3(60.0, -100.0+Frog.row*gridCellWidth+gridCellWidth/2, 140.0), vec3(60.0, 150.0, 0.0), vec3(0.0, 0.0, 1.0) );
+    var xLookAt = Frog.xPos;
+    if(xLookAt>85) xLookAt = 85;
+    else if(xLookAt<35) xLookAt = 35;
+    if(victory || isDead) {
+      if(zLookAt>4) zLookAt -= 0.5;
+      if(yLookAt>0) yLookAt -= 1.3;
+      if(yLookAt<-1.3) yLookAt += 1.3;
+    }
+    else {
+      yLookAt = -60.0+Frog.row*gridCellWidth+gridCellWidth/2;
+      zLookAt =40;
+    }
+    mv = lookAt( vec3(xLookAt, yLookAt, zLookAt), vec3(xLookAt, yLookAt+150, zLookAt-40), vec3(0.0, 0.0, 1.0) );
     drawScenery( mv );
     drawRoad(mv);
     drawRiver(mv);
+    //fields
+    drawFields(mv, 6*gridCellWidth, 7 , 0.4, 25*gridCellWidth, 2*gridCellWidth, 1.0);
+    drawFields(mv, 6*gridCellWidth, row6*10+gridCellWidth/2 , 0.4, 20*gridCellWidth, 15+gridCellWidth/2, 1.0);
+    drawFields(mv, 6*gridCellWidth, row11*10+gridCellWidth/2 , 0.4, 27*gridCellWidth, 10, 1.0);
+    //sky
+    drawSky(mv, 60 , 120, 1, 270, 1, 150);
+    // drawHouses(mv);
+
 
     for (var i = 1; i <= 5 ; i++) {
       drawRoadRow(mv, i);
@@ -295,9 +399,18 @@ function render()
       drawLogRow(mv, j);
     }
 
+    if(victory) {
+      document.getElementById("victory-message").innerHTML = "Congratulations! You won!"
+      document.getElementById("restart-message").innerHTML = "Hit 'R' to play again"
+    } else if(isDead) {
+      document.getElementById("victory-message").innerHTML = "Woops! You lost!"
+      document.getElementById("restart-message").innerHTML = "Hit 'R' to play again"
+    }
+
     Frog.update();
     Frog.checkCollision();
     Frog.draw(mv);
+
 
 
     requestAnimFrame( render );

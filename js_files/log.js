@@ -16,20 +16,26 @@ function initLog() {
   }
   //logs[row][number of logs] = x position
   for (var j = 7; j <= 10 ; j++) {
-    RANDOM = getRandom(0 , 50);
-    logs[j][0]=100 + RANDOM;
-    logs[j][1]=50 + RANDOM;
-    logs[j][2]=10 + RANDOM;
+
+    logs[j][0]=-30 + getRandom(0 , 50);;
+    logs[j][1]=30 + getRandom(0 , 50);;
+    logs[j][2]=90 + getRandom(0 , 50);;
+    logs[j][3]=120 + getRandom(0 , 50);;
   }
 }
 
 function updateLogLocation (row, speed) {
 
+//<<<<<<< HEAD
+//  for(var i = 0 ; i <= 3 ; i++) {
+//    logs[row][i] += speed;
+//=======
   for(var i = 0 ; i <= 2 ; i++) {
     logs[row][i] += speed * 2;
+//>>>>>>> refs/remotes/origin/master
 
-    if(logs[row][i] > 130+20) logs[row][i] = 0-20;
-    else if(logs[row][i] < 0-20) logs[row][i] = 130+20;
+    if(logs[row][i] > 130+60) logs[row][i] = 0-60;
+    else if(logs[row][i] < 0-60) logs[row][i] = 130+60;
     Grid.update( logs[row][i] , row)
   }
 }
@@ -38,8 +44,6 @@ function updateLogLocation (row, speed) {
 function drawLog( mv, x, row) {
     if(row%2 === 0 ) logDirection = 0.0;
     else logDirection = 180.0;
-    // console.log(row);
-    // console.log(x);
     mv = mult( mv, translate( x, row*gridCellWidth+gridCellWidth/2, 0.0 ) );
     mv = mult( mv, rotateZ( logDirection ) ) ;
 

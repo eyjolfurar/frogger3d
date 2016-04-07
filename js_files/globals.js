@@ -4,6 +4,9 @@ var RED = vec4(1.0, 0.0, 0.0, 1.0);
 var GRAY = vec4(0.4, 0.4, 0.4, 1.0);
 var YELLOW = vec4(1.0, 1.0, 0.0, 1.0);
 var BROWN = vec4(1.0, 0.5, 0.0, 1.0);
+var WHITE = vec4(1.0, 1.0, 1.0, 1.0);
+var BLUELIGHT = vec4(0.0, 0.0, 1.0, 0.5);
+var GREENGROUND = vec4(0.184314 , 0.309804 , 0.184314, 1.0);
 var RANDOM = 0.0;
 var colors = [BLUE, RED, YELLOW, BLUE, RED];
 
