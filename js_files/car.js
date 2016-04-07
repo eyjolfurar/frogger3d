@@ -30,8 +30,8 @@ function updateCarLocation (row, speed) {
     //Collission
 
     //
-    if(cars[row][i] > 130+20) cars[row][i] = 0-20;
-    else if(cars[row][i] < 0-20) cars[row][i] = 130+20;
+    if(cars[row][i] > 130+30) cars[row][i] = 0-30;
+    else if(cars[row][i] < 0-30) cars[row][i] = 130+30;
     Grid.update( cars[row][i] , row);
   }
 }
