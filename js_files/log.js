@@ -26,8 +26,13 @@ function initLog() {
 
 function updateLogLocation (row, speed) {
 
-  for(var i = 0 ; i <= 3 ; i++) {
-    logs[row][i] += speed;
+//<<<<<<< HEAD
+//  for(var i = 0 ; i <= 3 ; i++) {
+//    logs[row][i] += speed;
+//=======
+  for(var i = 0 ; i <= 2 ; i++) {
+    logs[row][i] += speed * 2;
+//>>>>>>> refs/remotes/origin/master
 
     if(logs[row][i] > 130+60) logs[row][i] = 0-60;
     else if(logs[row][i] < 0-60) logs[row][i] = 130+60;
