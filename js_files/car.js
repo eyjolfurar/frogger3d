@@ -26,7 +26,7 @@ function initCar() {
 function updateCarLocation (row, speed) {
 
   for(var i = 0 ; i <= 2 ; i++) {
-    cars[row][i] += speed*2;
+    cars[row][i] += speed;
     //Collission
 
     //
@@ -41,27 +41,30 @@ function drawCar( mv, x, row) {
     if(row%2 === 0 ) carDirection = 0.0;
     else carDirection = 180.0;
 
-    mv = mult( mv, translate( x, row*gridCellWidth+gridCellWidth/2, 0.0 ) );
+    mv = mult( mv, translate( x, row*gridCellWidth+gridCellWidth/2, 2 ) );
     mv = mult( mv, rotateZ( carDirection ) ) ;
 
     // set color
     gl.uniform4fv( colorLoc, colors[row-1] );
 
-    gl.bindBuffer( gl.ARRAY_BUFFER, frogBuffer );
-    gl.vertexAttribPointer( vPosition, 3, gl.FLOAT, false, 0, 0 );
+    gl.bindBuffer( gl.ARRAY_BUFFER, carBuffer );
+    gl.vertexAttribPointer( vPosition, 4, gl.FLOAT, false, 0, 0 );
 
     var mv1 = mv;
     // lower body of the car
-    mv = mult( mv, scalem( carLength, carWidth, 2.0 ) );
+    mv = mult( mv, scalem( 2, 2, 2 ) );
     mv = mult( mv, translate( 0.0, 0.0, 0.5 ) );
 
+    // rotate car
+    mv = mult( mv, rotate( 90, [0,0,1]) );
+    mv = mult( mv, rotate( 90, [1,0,0]) );
     gl.uniformMatrix4fv(mvLoc, false, flatten(mv));
-    gl.drawArrays( gl.TRIANGLES, 0, frogVertices.length );
+    gl.drawArrays( gl.TRIANGLES, 0, carVertices.length );
 
     // upper part of the car
-    mv1 = mult( mv1, scalem( 4.0, 3.0, 2.0 ) );
-    mv1 = mult( mv1, translate( -0.2, 0.0, 1.5 ) );
+    // mv1 = mult( mv1, scalem( 4.0, 3.0, 2.0 ) );
+    // mv1 = mult( mv1, translate( -0.2, 0.0, 1.5 ) );
 
-    gl.uniformMatrix4fv(mvLoc, false, flatten(mv1));
-    gl.drawArrays( gl.TRIANGLES, 0, frogVertices.length );
+    // gl.uniformMatrix4fv(mvLoc, false, flatten(mv1));
+    // gl.drawArrays( gl.TRIANGLES, 0, carVertices.length );
 }

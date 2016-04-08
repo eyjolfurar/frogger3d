@@ -14,15 +14,13 @@ Frog.draw = function(mv) {
 
     gl.bindBuffer( gl.ARRAY_BUFFER, frogBuffer );
     // gl.bindBuffer( gl.ARRAY_BUFFER, cubeBuffer );
-    gl.vertexAttribPointer( vPosition, 3, gl.FLOAT, false, 0, 0 );
+    gl.vertexAttribPointer( vPosition, 4, gl.FLOAT, false, 0, 0 );
 
-    mv = mult( mv, translate( this.xPos, this.row*gridCellWidth+gridCellWidth/2, 1 ) );
+    mv = mult( mv, translate( this.xPos, this.row*gridCellWidth+gridCellWidth/2, 2 ) );
 //<<<<<<< HEAD
   //  mv = mult( mv, scalem( Frog.width,Frog.width,2.5 ) );
 //=======
-    mv = mult( mv, scalem( 3,3,3 ) );
-    // rotate frog
-    mv = mult( mv, rotate( 90, [1,1,1]) );
+    mv = mult( mv, scalem( 4,4,4 ) );
 //>>>>>>> refs/remotes/origin/master
 
     gl.uniformMatrix4fv(mvLoc, false, flatten(mv));

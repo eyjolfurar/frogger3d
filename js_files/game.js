@@ -42,11 +42,16 @@ var cubeVertices = [
     vec3( -0.5, -0.5,  0.5 ), vec3( -0.5,  0.5,  0.5 ), vec3( -0.5,  0.5, -0.5 )
 ];
 
+// Frog stuff
+var PR;
+var plyDataFrog;
+var frogVertices = [];
+var frogBuffer;
 
-var PR = PlyReader();
-var plyData = PR.read("frog1.ply");
-
-var frogVertices = plyData.points;
+// Car stuff
+var plyDataCar;
+var carVertices = [];
+var carBuffer;
 
 //ROAD STUFF
 var terrainBuffer;
@@ -82,7 +87,6 @@ var terrainVertices = [
 // ];
 var yLookAt = -60.0+Frog.row*gridCellWidth+gridCellWidth/2;
 var zLookAt = 40;
-var frogBuffer;
 var victory = false;
 var isDead = false;
 var randomNumbers1 = [];
@@ -100,6 +104,13 @@ window.onload = function init()
     gl.clearColor( 0.7, 0.6, 0.7, 1.0 );
 
     gl.enable(gl.DEPTH_TEST);
+
+    PR = PlyReader()
+    plyDataFrog = PR.read("frog2.ply");
+    frogVertices = plyDataFrog.points;
+
+    plyDataCar = PR.read("L200-OBJ.ply");
+    carVertices = plyDataCar.points;
 
     //
     //  Load shaders and initialize attribute buffers
@@ -123,6 +134,11 @@ window.onload = function init()
     gl.bufferData( gl.ARRAY_BUFFER, flatten(frogVertices), gl.STATIC_DRAW );
     // gl.bindBuffer( gl.ARRAY_BUFFER, cubeBuffer );
     // gl.bufferData( gl.ARRAY_BUFFER, flatten(cubeVertices), gl.STATIC_DRAW );
+
+    // VBO for car
+    carBuffer = gl.createBuffer();
+    gl.bindBuffer( gl.ARRAY_BUFFER, carBuffer );
+    gl.bufferData( gl.ARRAY_BUFFER, flatten(carVertices), gl.STATIC_DRAW );
 
     // VBO for the road
     terrainBuffer = gl.createBuffer();
