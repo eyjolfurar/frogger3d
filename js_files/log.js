@@ -26,13 +26,9 @@ function initLog() {
 
 function updateLogLocation (row, speed) {
 
-//<<<<<<< HEAD
-//  for(var i = 0 ; i <= 3 ; i++) {
-//    logs[row][i] += speed;
-//=======
+
   for(var i = 0 ; i <= 3 ; i++) {
     logs[row][i] += speed;
-//>>>>>>> refs/remotes/origin/master
 
     if(logs[row][i] > 130+60) logs[row][i] = 0-60;
     else if(logs[row][i] < 0-60) logs[row][i] = 130+60;
@@ -54,9 +50,9 @@ function drawLog( mv, x, row) {
     gl.vertexAttribPointer( vPosition, 3, gl.FLOAT, false, 0, 0 );
 
     var mv1 = mv;
-    // lower body of the log
+    //  body of the log
     mv = mult( mv, scalem( logLength, logWidth, 2.0 ) );
-    mv = mult( mv, translate( 0.0, 0.0, 0.5 ) );
+    mv = mult( mv, translate( 0.0, 0.0, 0.2 ) );
 
     gl.uniformMatrix4fv(mvLoc, false, flatten(mv));
     gl.drawArrays( gl.TRIANGLES, 0, numCubeVertices );

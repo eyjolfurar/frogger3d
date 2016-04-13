@@ -36,6 +36,7 @@ main()
 <script type="text/javascript" src="./js_files/game.js"></script>
 
 </head><body>
+  <div class="container">
 <h1>Frogger! Now in 3D!</h1>
 <h2 id="victory-message"></h2>
 <h3 id="restart-message"></h3>
@@ -45,9 +46,33 @@ Oops ... your browser doesn't support the HTML5 canvas element
 <p >Press the arrow buttons to move frogger!</p>
 <p >Press "R" to restart the game!</p>
 <p >Have fun!</p>
-
+</div>
 <br>
 
+<style media="screen">
+  body {
+    margin: 0;
 
+  }
+  p {
+    text-align: center;
+  }
+  h1 {
+    text-align: center;
+  }
+  h2 {
+    text-align: center;
+  }
+  h3 {
+    text-align: center;
+  }
+  canvas {
+    border-left: 1px dotted;
+    border-right: 1px dotted;
+    height: 60%;
+    display: block;
+    margin: auto;
+  }
+  </style>
 
 </body></html>

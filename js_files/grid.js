@@ -3,8 +3,6 @@
 var Grid = [];
 
 Grid.init = function() {
-
-
   for(var i = 0 ; i < columns ; i++) {
     //make rows
     Grid[i]=[];

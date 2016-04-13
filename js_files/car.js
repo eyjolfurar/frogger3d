@@ -27,9 +27,9 @@ function updateCarLocation (row, speed) {
 
   for(var i = 0 ; i <= 2 ; i++) {
     cars[row][i] += speed;
-    //Collission
 
-    //
+
+
     if(cars[row][i] > 130+30) cars[row][i] = 0-30;
     else if(cars[row][i] < 0-30) cars[row][i] = 130+30;
     Grid.update( cars[row][i] , row);
@@ -61,10 +61,5 @@ function drawCar( mv, x, row) {
     gl.uniformMatrix4fv(mvLoc, false, flatten(mv));
     gl.drawArrays( gl.TRIANGLES, 0, carVertices.length );
 
-    // upper part of the car
-    // mv1 = mult( mv1, scalem( 4.0, 3.0, 2.0 ) );
-    // mv1 = mult( mv1, translate( -0.2, 0.0, 1.5 ) );
 
-    // gl.uniformMatrix4fv(mvLoc, false, flatten(mv1));
-    // gl.drawArrays( gl.TRIANGLES, 0, carVertices.length );
 }

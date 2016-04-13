@@ -17,15 +17,11 @@ Frog.draw = function(mv) {
     gl.vertexAttribPointer( vPosition, 4, gl.FLOAT, false, 0, 0 );
 
     mv = mult( mv, translate( this.xPos, this.row*gridCellWidth+gridCellWidth/2, 2 ) );
-//<<<<<<< HEAD
-  //  mv = mult( mv, scalem( Frog.width,Frog.width,2.5 ) );
-//=======
+
     mv = mult( mv, scalem( 4,4,4 ) );
-//>>>>>>> refs/remotes/origin/master
 
     gl.uniformMatrix4fv(mvLoc, false, flatten(mv));
     gl.drawArrays( gl.TRIANGLES, 0, frogVertices.length );
-    // gl.drawArrays( gl.TRIANGLES, 0, numCubeVertices );
 }
 
 Frog.update = function() {
@@ -67,19 +63,11 @@ Frog.checkCollision = function() {
 
     // Collission detection
     var testx = Math.floor((Frog.xPos)/gridCellWidth);
-//<<<<<<< HEAD
-    // console.log(testx);
+
 
     if(testx>col11 || testx < col0 || Grid[testx][Frog.row] === true) {
       this.xPos = 500;
       isDead = true;
-//=======
-  //  if(Grid[testx][Frog.row] === true) {
-    //  console.log("BOOM");
 
-    //  Frog.xPos = gridCellWidth*col6+gridCellWidth/2;
-    //  Frog.row = 0;
-    //  Frog.col = 6;
-//>>>>>>> refs/remotes/origin/master
     }
 }
